@@ -17,8 +17,8 @@ A modular, extensible framework for training Qwen2.5 models with support for cus
 ### Installation
 
 ```bash
-git clone https://github.com/nlpyoda/qwen25-training-framework.git
-cd qwen25-training-framework
+git clone https://github.com/nlpyoda/qwen25-finetune.git
+cd qwen25-finetune
 ./scripts/setup_environment.sh
 ```
 
