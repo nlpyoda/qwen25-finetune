@@ -1,0 +1,95 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyTorch
+*.pth
+*.pt
+*.bin
+*.safetensors
+
+# Training outputs
+output/
+outputs/
+checkpoints/
+logs/
+runs/
+wandb/
+tensorboard_logs/
+
+# Data
+data/
+datasets/
+*.jsonl
+*.json
+*.csv
+*.tsv
+
+# Models and weights
+models/
+*.model
+*.ckpt
+
+# Environment and IDE
+.env
+.venv
+venv/
+ENV/
+env/
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints
+
+# Temporary files
+*.tmp
+*.temp
+temp_*
+test_*
+*.log
+
+# Configuration files with secrets
+*secret*
+*private*
+.env.*
+
+# Cache
+.cache/
+.pytest_cache/
+
+# Distribution configs
+*.yaml.bak
+*.yml.bak

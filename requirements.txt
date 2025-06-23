@@ -1,0 +1,49 @@
+# Core ML libraries
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# Transformers ecosystem
+transformers>=4.47.0
+accelerate>=1.1.0
+peft>=0.15.0
+datasets>=2.14.0
+tokenizers>=0.15.0
+
+# Training optimization
+deepspeed>=0.16.0
+flash-attn>=2.0.0
+liger-kernel>=0.5.0
+bitsandbytes>=0.41.0
+
+# Qwen-specific
+qwen-vl-utils
+
+# TRL for reinforcement learning
+trl>=0.17.0
+
+# Data processing
+Pillow>=9.0.0
+opencv-python>=4.5.0
+
+# Utilities
+PyYAML>=6.0
+tqdm>=4.64.0
+numpy>=1.21.0
+pandas>=1.3.0
+
+# Monitoring and logging
+tensorboard>=2.10.0
+wandb>=0.15.0
+
+# Development tools
+pytest>=7.0.0
+black>=22.0.0
+isort>=5.10.0
+flake8>=5.0.0
+
+# Optional dependencies for specific features
+# Uncomment as needed:
+# jupyter>=1.0.0
+# matplotlib>=3.5.0
+# seaborn>=0.11.0

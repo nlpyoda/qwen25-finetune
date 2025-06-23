@@ -1,0 +1,100 @@
+# Multi-node distributed training configuration for AWS p4d.24xlarge instances
+# Optimized for 2+ nodes with 8 A100 GPUs each
+
+distributed:
+  # Basic settings
+  backend: "nccl"
+  nodes: 2  # Adjust based on your cluster size
+  node_rank: 0  # Will be overridden at runtime
+  world_size: 16  # nodes * gpus_per_node (2 * 8 = 16)
+  
+  # Network settings (CRITICAL for multi-node)
+  master_addr: "REPLACE_WITH_MASTER_IP"  # Set this to master node IP
+  master_port: 29500
+  
+  # NCCL settings optimized for p4d instances
+  nccl_timeout_minutes: 30
+  nccl_debug: "WARN"  # Use "INFO" for debugging
+  nccl_socket_ifname: "^docker0,lo"
+  nccl_ib_disable: false  # Enable InfiniBand for p4d
+  nccl_tree_threshold: 0
+  nccl_algo: "Tree"  # Tree algorithm works well for multi-node
+  
+  # Performance optimizations for large models
+  find_unused_parameters: false
+  gradient_as_bucket_view: true
+  static_graph: false
+  
+  # AWS/p4d specific settings
+  use_infiniband: true
+  optimize_for_aws: true
+  instance_type: "p4d.24xlarge"
+  
+  # Environment settings
+  cuda_device_order: "PCI_BUS_ID"
+  pytorch_cuda_alloc_conf: "expandable_segments:True"
+  omp_num_threads: 16  # p4d has many CPU cores
+  mkl_num_threads: 16
+
+# Training configuration optimized for multi-node
+training:
+  per_device_train_batch_size: 1  # Start conservative for large models
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8  # Higher accumulation for effective large batches
+  dataloader_num_workers: 16  # More workers for p4d
+  pin_memory: true
+  
+  # Checkpointing settings for multi-node
+  save_steps: 500
+  eval_steps: 500
+  logging_steps: 10
+  save_total_limit: 3
+  
+  # Resume from checkpoint handling
+  resume_from_checkpoint: true
+  ignore_data_skip: false
+
+# Model configuration
+model:
+  architecture: "qwen25_vl"
+  config:
+    # These will be loaded from the base model
+    gradient_checkpointing: true  # Essential for large models
+    use_cache: false
+
+# Special tokens configuration
+special_tokens:
+  tokens:
+    - token: "<SYSTEM>"
+      description: "System message token"
+      trainable: true
+    - token: "<USER>"
+      description: "User message token"
+      trainable: true
+    - token: "<ASSISTANT>"
+      description: "Assistant response token"
+      trainable: true
+
+# Loss configuration
+loss:
+  type: "label_smoothing"
+  config:
+    smoothing: 0.1
+    weight: 1.0
+
+# Monitoring
+monitoring:
+  wandb_project: "qwen25-multinode-training"
+  log_model_architecture: true
+  log_gradients: false  # Disable for performance
+  log_parameters: false
+
+# Example usage commands:
+# 
+# Master node (rank 0):
+# torchrun --nnodes=2 --node_rank=0 --master_addr=$MASTER_IP --master_port=29500 \
+#          --nproc_per_node=8 train.py --config configs/distributed/multi_node_p4d.yaml
+#
+# Worker node (rank 1):  
+# torchrun --nnodes=2 --node_rank=1 --master_addr=$MASTER_IP --master_port=29500 \
+#          --nproc_per_node=8 train.py --config configs/distributed/multi_node_p4d.yaml

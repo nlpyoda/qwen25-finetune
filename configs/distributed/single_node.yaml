@@ -1,0 +1,48 @@
+# Single-node distributed training configuration
+# Use this for training on a single machine with multiple GPUs
+
+distributed:
+  # Basic settings
+  backend: "nccl"
+  nodes: 1
+  node_rank: 0
+  world_size: 8  # Adjust based on available GPUs
+  
+  # Network settings (not critical for single node)
+  master_addr: "localhost"
+  master_port: 29500
+  
+  # NCCL settings for single node
+  nccl_timeout_minutes: 10  # Shorter timeout for single node
+  nccl_debug: "WARN"
+  nccl_algo: "Ring"  # Ring works well for single node
+  nccl_tree_threshold: 0
+  
+  # Performance optimizations
+  find_unused_parameters: false
+  gradient_as_bucket_view: true
+  static_graph: false
+  
+  # Environment settings
+  cuda_device_order: "PCI_BUS_ID"
+  pytorch_cuda_alloc_conf: "expandable_segments:True"
+  omp_num_threads: 8  # Adjust based on CPU cores
+  mkl_num_threads: 8
+
+# Training configuration
+training:
+  per_device_train_batch_size: 2
+  per_device_eval_batch_size: 2
+  gradient_accumulation_steps: 4
+  dataloader_num_workers: 8
+  pin_memory: true
+  
+# Model configuration
+model:
+  architecture: "qwen25_vl"
+  config:
+    # Model will be loaded from HuggingFace
+    pass
+
+# Example usage command:
+# torchrun --nproc_per_node=8 train.py --config configs/distributed/single_node.yaml
